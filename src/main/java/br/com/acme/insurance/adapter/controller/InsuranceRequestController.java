@@ -3,13 +3,17 @@ package br.com.acme.insurance.adapter.controller;
 import br.com.acme.insurance.adapter.controller.api.InsuranceRequestApi;
 import br.com.acme.insurance.adapter.controller.dto.CreateInsuranceRequestInput;
 import br.com.acme.insurance.adapter.controller.dto.CreateInsuranceRequestOutput;
+import br.com.acme.insurance.adapter.controller.dto.ErrorResponse;
 import br.com.acme.insurance.adapter.controller.dto.InsuranceDetails;
+import br.com.acme.insurance.adapter.controller.exception.InsuranceByCustomerNotFoundException;
+import br.com.acme.insurance.adapter.controller.exception.InsuranceNotFoundException;
 import br.com.acme.insurance.adapter.controller.mapper.InsuranceDtoMapper;
 import br.com.acme.insurance.application.usecase.CancelInsuranceUseCase;
 import br.com.acme.insurance.application.usecase.CreateInsuranceUseCase;
 import br.com.acme.insurance.application.usecase.GetInsuranceUseCase;
 import br.com.acme.insurance.domain.model.Insurance;
 import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,17 +28,20 @@ public class InsuranceRequestController implements InsuranceRequestApi {
     private final GetInsuranceUseCase getInsuranceUseCase;
     private final CancelInsuranceUseCase cancelInsuranceUseCase;
     private final InsuranceDtoMapper mapper;
+    private final MessageSource messageSource;
 
     public InsuranceRequestController(
             CreateInsuranceUseCase createInsuranceUseCase,
             GetInsuranceUseCase getInsuranceUseCase,
             CancelInsuranceUseCase cancelInsuranceUseCase,
-            InsuranceDtoMapper mapper
+            InsuranceDtoMapper mapper,
+            MessageSource messageSource
     ) {
         this.createInsuranceUseCase = createInsuranceUseCase;
         this.getInsuranceUseCase = getInsuranceUseCase;
         this.cancelInsuranceUseCase = cancelInsuranceUseCase;
         this.mapper = mapper;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -53,7 +60,7 @@ public class InsuranceRequestController implements InsuranceRequestApi {
         return getInsuranceUseCase.byId(id)
                 .map(mapper::toDetails)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new InsuranceNotFoundException(id));
     }
 
     @Override
@@ -63,6 +70,10 @@ public class InsuranceRequestController implements InsuranceRequestApi {
                 .stream()
                 .map(mapper::toDetails)
                 .toList();
+
+        if (list.isEmpty()) {
+            throw new InsuranceByCustomerNotFoundException(customerId);
+        }
 
         return ResponseEntity.ok(list);
     }

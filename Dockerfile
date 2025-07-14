@@ -9,9 +9,13 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-# Copia o JAR gerado
-COPY --from=builder /app/target/insurance-policy-service-1.0.0.jar app.jar
+# Permite passar opções extras para a JVM (ex: debug)
+ENV JAVA_OPTS=""
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copia o JAR gerado (nome corrigido)
+COPY --from=builder /app/target/ms-insurance-policy-service-api-1.0.0.jar app.jar
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
 
 EXPOSE 8080
+EXPOSE 5005

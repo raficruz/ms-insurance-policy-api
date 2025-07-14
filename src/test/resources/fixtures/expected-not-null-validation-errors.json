@@ -1,0 +1,11 @@
+{
+  "salesChannel": "não deve estar em branco",
+  "productId": "não deve ser nulo",
+  "category": "não deve ser nulo",
+  "coverages": "não deve ser nulo",
+  "paymentMethod": "não deve estar em branco",
+  "totalMonthlyPremiumAmount": "não deve ser nulo",
+  "customerId": "não deve ser nulo",
+  "assistances": "não deve ser nulo",
+  "insuredAmount": "não deve ser nulo"
+}
