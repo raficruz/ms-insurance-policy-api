@@ -2,6 +2,12 @@
 
 Microsserviço responsável pela gestão do ciclo de vida de solicitações de apólices de seguros da ACME.
 
+## Repositório do Projeto
+
+O código-fonte completo está disponível em:
+
+[https://github.com/raficruz/ms-insurance-policy-service-api](https://github.com/raficruz/ms-insurance-policy-api)
+
 ## Sobre o Serviço de Solicitações de Seguro
 
 O serviço de solicitações de seguro gerencia todo o fluxo de uma solicitação de apólice, desde a criação até a aprovação, rejeição ou cancelamento. O ciclo de vida da aplicação é o seguinte:
@@ -203,4 +209,4 @@ Abra este arquivo no navegador para visualizar a cobertura de código dos testes
 
 ## Contato
 
-Rafael Cruz
+Rafael Cruz - raficruz@gmail.com
