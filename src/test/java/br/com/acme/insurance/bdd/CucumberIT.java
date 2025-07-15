@@ -9,5 +9,5 @@ import org.springframework.test.context.ActiveProfiles;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ActiveProfiles("test")
-public class CucumberTest {
+public class CucumberIT {
 }

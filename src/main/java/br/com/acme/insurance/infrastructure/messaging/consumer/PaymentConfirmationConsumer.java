@@ -14,8 +14,12 @@ public class PaymentConfirmationConsumer {
         this.useCase = useCase;
     }
 
-    @KafkaListener(topics = "payment-confirmation", groupId = "insurance-policy")
+    @KafkaListener(
+            topics = "payment-confirmation",
+            groupId = "insurance-policy",
+            properties = {"spring.json.value.default.type=br.com.acme.insurance.infrastructure.messaging.dto.PaymentConfirmationEvent"}
+    )
     public void consume(PaymentConfirmationEvent event) {
-        useCase.processPaymentConfirmation(event.insuranceId());
+        useCase.processPaymentConfirmation(event.insuranceId(), event.status());
     }
 }

@@ -1,9 +1,9 @@
 package br.com.acme.insurance.application.usecase;
 
+import br.com.acme.insurance.application.port.FraudAnalysisClientPort;
 import br.com.acme.insurance.domain.model.Insurance;
 import br.com.acme.insurance.domain.repository.InsuranceRepository;
-import br.com.acme.insurance.infrastructure.messaging.consumer.InsuranceCreatedEvent;
-import org.springframework.kafka.core.KafkaTemplate;
+import br.com.acme.insurance.infrastructure.messaging.publisher.InsuranceEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,25 +12,19 @@ import java.util.UUID;
 public class CreateInsuranceUseCase {
 
     private final InsuranceRepository repository;
-    private final KafkaTemplate<String, InsuranceCreatedEvent> kafkaTemplate;
+    private final FraudAnalysisClientPort fraudAnalysisClient;
+    private final InsuranceEventPublisher eventPublisher;
 
-    public CreateInsuranceUseCase(InsuranceRepository repository, KafkaTemplate<String, InsuranceCreatedEvent> kafkaTemplate) {
+    public CreateInsuranceUseCase(InsuranceRepository repository, FraudAnalysisClientPort fraudAnalysisClient, InsuranceEventPublisher eventPublisher) {
         this.repository = repository;
-        this.kafkaTemplate = kafkaTemplate;
+        this.fraudAnalysisClient = fraudAnalysisClient;
+        this.eventPublisher = eventPublisher;
     }
 
     public UUID execute(Insurance insurance) {
-        var saved = repository.save(insurance);
-        var event = new InsuranceCreatedEvent(
-                saved.getId(),
-                saved.getCustomerId(),
-                saved.getProductId(),
-                saved.getCategory(),
-                saved.getInsuredAmount(),
-                saved.getTotalMonthlyPremiumAmount(),
-                saved.getCreatedAt()
-        );
-        kafkaTemplate.send("insurance-created-topic", event);
+        Insurance saved = repository.save(insurance);
+        eventPublisher.publishReceivedEvent(saved.getId());
+        fraudAnalysisClient.analyze(saved);
         return saved.getId();
     }
 }

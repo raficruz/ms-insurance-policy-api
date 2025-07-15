@@ -169,15 +169,6 @@ public class CreateInsuranceStepsDef {
         assertThat(actual).containsExactlyElementsOf(expected);
     }
 
-    @E("o campo history deve ser uma lista vazia")
-    public void campo_history_lista_vazia() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode json = mapper.readTree(response.getBody());
-        JsonNode history = json.get("history");
-        assertThat(history.isArray()).isTrue();
-        assertThat(history).isEmpty();
-    }
-
     @Dado("que não existe apólice cadastrada com o ID {string}")
     public void nao_existe_apolice_com_id(String id) {
         this.insuranceId = UUID.fromString(id);

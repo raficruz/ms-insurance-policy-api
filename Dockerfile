@@ -1,9 +1,8 @@
 # Etapa de build
-FROM maven:3.9.4-eclipse-temurin-17 AS builder
+FROM gradle:8.7-jdk17 AS builder
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY . .
+RUN gradle clean bootJar --no-daemon
 
 # Etapa de runtime
 FROM eclipse-temurin:17-jdk-alpine
@@ -13,7 +12,7 @@ WORKDIR /app
 ENV JAVA_OPTS=""
 
 # Copia o JAR gerado (nome corrigido)
-COPY --from=builder /app/target/ms-insurance-policy-service-api-1.0.0.jar app.jar
+COPY --from=builder /app/build/libs/ms-insurance-policy-service-api-1.0.0.jar app.jar
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
 

@@ -2,7 +2,6 @@ package br.com.acme.insurance.infrastructure.messaging.consumer;
 
 import br.com.acme.insurance.application.usecase.ProcessEventsUseCase;
 import br.com.acme.insurance.infrastructure.messaging.dto.SubscriptionAuthorizationEvent;
-import br.com.acme.insurance.shared.enums.SubscriptionStatus;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +15,14 @@ public class SubscriptionAuthorizationConsumer {
     }
 
     @KafkaListener(topics = "subscription-authorization", groupId = "insurance-policy")
+    @KafkaListener(
+            topics = "subscription-authorization",
+            groupId = "insurance-policy",
+            properties = {"spring.json.value.default.type=br.com.acme.insurance.infrastructure.messaging.dto.SubscriptionAuthorizationEvent"}
+    )
     public void consume(SubscriptionAuthorizationEvent event) {
         useCase.processSubscriptionAuthorization(
-                event.insuranceId(),
-                SubscriptionStatus.valueOf(event.status())
+                event.insuranceId(), event.status()
         );
     }
 }

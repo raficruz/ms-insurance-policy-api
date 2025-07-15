@@ -3,7 +3,6 @@ package br.com.acme.insurance.adapter.controller;
 import br.com.acme.insurance.adapter.controller.api.InsuranceRequestApi;
 import br.com.acme.insurance.adapter.controller.dto.CreateInsuranceRequestInput;
 import br.com.acme.insurance.adapter.controller.dto.CreateInsuranceRequestOutput;
-import br.com.acme.insurance.adapter.controller.dto.ErrorResponse;
 import br.com.acme.insurance.adapter.controller.dto.InsuranceDetails;
 import br.com.acme.insurance.adapter.controller.exception.InsuranceByCustomerNotFoundException;
 import br.com.acme.insurance.adapter.controller.exception.InsuranceNotFoundException;

@@ -13,20 +13,19 @@ Funcionalidade: Buscar solicitação de apólice de seguro por ID
       | category                   | AUTO                                       |
       | salesChannel               | MOBILE                                     |
       | paymentMethod              | CREDIT_CARD                                |
-      | status                     | RECEIVED                                   |
+      | status                     | VALIDATED                                  |
       | totalMonthlyPremiumAmount  | 75.25                                      |
-      | insuredAmount              | 275000.5                                  |
+      | insuredAmount              | 275000.5                                   |
     E o campo coverages deve conter:
       | cobertura                  | valor      |
       | Roubo                      | 100000.25  |
       | Perda Total                | 100000.25  |
-      | Colisão com Terceiros      | 75000.0   |
+      | Colisão com Terceiros      | 75000.0    |
     E o campo assistances deve conter:
       | assistência                |
       | Guincho até 250km          |
       | Troca de Óleo              |
       | Chaveiro 24h               |
-    E o campo history deve ser uma lista vazia
 
   Cenário: Buscar apólice inexistente por ID
     Dado que não existe apólice cadastrada com o ID "3fa85f64-5717-4562-b3fc-2c963f66afa6"

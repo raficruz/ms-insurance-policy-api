@@ -12,10 +12,8 @@ import java.time.OffsetDateTime;
 
 @Embeddable
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class StatusChangeEntity {
 
     @Enumerated(EnumType.STRING)

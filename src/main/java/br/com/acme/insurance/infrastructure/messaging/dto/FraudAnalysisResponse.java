@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record FraudAnalysisEvent(
+public record FraudAnalysisResponse(
         UUID insuranceId,
         UUID customerId,
         String customerType,

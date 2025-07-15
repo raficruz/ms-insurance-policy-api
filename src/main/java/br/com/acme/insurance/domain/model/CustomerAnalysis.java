@@ -1,16 +1,16 @@
 package br.com.acme.insurance.domain.model;
 
 import br.com.acme.insurance.shared.enums.CustomerType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class CustomerAnalysis {
 

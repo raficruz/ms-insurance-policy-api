@@ -4,7 +4,6 @@ import br.com.acme.insurance.domain.model.CustomerAnalysis;
 import br.com.acme.insurance.domain.policy.EligibilityPolicy;
 import br.com.acme.insurance.domain.repository.InsuranceRepository;
 import br.com.acme.insurance.shared.enums.InsuranceStatus;
-import br.com.acme.insurance.shared.enums.SubscriptionStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -29,8 +28,9 @@ public class ProcessEventsUseCase {
             boolean approved = policies.stream()
                     .anyMatch(policy -> policy.isEligible(insurance));
 
-            insurance.setStatus(approved ? InsuranceStatus.APPROVED : InsuranceStatus.REJECTED);
-            insurance.addStatusHistory(insurance.getStatus(), OffsetDateTime.now());
+            InsuranceStatus newStatus = approved ? InsuranceStatus.VALIDATED : InsuranceStatus.REJECTED;
+            insurance.setStatus(newStatus);
+            insurance.addStatusHistory(newStatus, OffsetDateTime.now());
 
             repository.save(insurance);
         });
@@ -41,14 +41,15 @@ public class ProcessEventsUseCase {
             boolean approved = policies.stream()
                     .anyMatch(policy -> policy.isEligible(insurance));
 
-            insurance.setStatus(approved ? InsuranceStatus.APPROVED : InsuranceStatus.REJECTED);
-            insurance.addStatusHistory(insurance.getStatus(), OffsetDateTime.now());
+            InsuranceStatus newStatus = approved ? InsuranceStatus.APPROVED : InsuranceStatus.REJECTED;
+            insurance.setStatus(newStatus);
+            insurance.addStatusHistory(newStatus, OffsetDateTime.now());
 
             repository.save(insurance);
         });
     }
 
-    public void processPaymentConfirmation(UUID insuranceId) {
+    public void processPaymentConfirmation(UUID insuranceId, InsuranceStatus status) {
         repository.findById(insuranceId).ifPresent(insurance -> {
             insurance.setStatus(InsuranceStatus.VALIDATED);
             insurance.addStatusHistory(InsuranceStatus.VALIDATED, OffsetDateTime.now());
@@ -57,15 +58,22 @@ public class ProcessEventsUseCase {
         });
     }
 
-    public void processSubscriptionAuthorization(UUID insuranceId, SubscriptionStatus status) {
+    public void processSubscriptionAuthorization(UUID insuranceId, InsuranceStatus status) {
         repository.findById(insuranceId).ifPresent(insurance -> {
-            if (status == SubscriptionStatus.AUTHORIZED) {
-                insurance.setStatus(InsuranceStatus.APPROVED);
-            } else {
-                insurance.setStatus(InsuranceStatus.REJECTED);
-            }
-            insurance.addStatusHistory(insurance.getStatus(), OffsetDateTime.now());
+            InsuranceStatus newStatus = (status == InsuranceStatus.VALIDATED)
+                    ? InsuranceStatus.APPROVED
+                    : InsuranceStatus.REJECTED;
+            insurance.setStatus(newStatus);
+            insurance.addStatusHistory(newStatus, OffsetDateTime.now());
 
+            repository.save(insurance);
+        });
+    }
+
+    public void updateStatusToReceived(UUID insuranceId) {
+        repository.findById(insuranceId).ifPresent(insurance -> {
+            insurance.setStatus(InsuranceStatus.RECEIVED);
+            insurance.addStatusHistory(InsuranceStatus.RECEIVED, OffsetDateTime.now());
             repository.save(insurance);
         });
     }
